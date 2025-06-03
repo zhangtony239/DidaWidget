@@ -2,7 +2,6 @@ import sys
 import os
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtCore import Qt, QTimer, QUrl, QStandardPaths
-from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEngineProfile
 import win32gui
@@ -12,13 +11,6 @@ class CustomWebEngineView(QWebEngineView):
     def contextMenuEvent(self, event):
         # 禁用右键菜单
         pass
-
-    def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key.Key_Tab:
-            # 忽略 Tab 键事件
-            event.ignore()
-        else:
-            super().keyPressEvent(event)
 
 class TickTickViewer(QMainWindow):
     def __init__(self):
@@ -51,18 +43,19 @@ class TickTickViewer(QMainWindow):
         self.browser = CustomWebEngineView(self.profile, self) # 使用自定义 profile
         self.browser.setUrl(QUrl("https://dida365.com/webapp"))
         self.browser.setGeometry(-50, 0, 650, 640) # WebEngineView相对于QMainWindow的位置
-        # 确保 QWebEngineView 背景是透明的，以便 mix-blend-mode 生效
-        self.browser.page().setBackgroundColor(Qt.GlobalColor.transparent)
         self.browser.loadFinished.connect(self.apply_multiply_effect)
 
 
     def apply_multiply_effect(self, ok):
         if ok:
-            # 为 body 应用 mix-blend-mode 和透明背景
-            # !important 用于尝试覆盖页面自身的样式
             script = """
-                document.body.style.mixBlendMode = 'multiply';
-                document.body.style.backgroundColor = 'transparent !important';
+                // Add event listener to prevent Tab key default action
+                document.addEventListener('keydown', function(event) {
+                    // Check for Tab key (event.key === 'Tab' or event.keyCode === 9 for older browsers)
+                    if (event.key === 'Tab' || event.keyCode === 9) {
+                        event.preventDefault();
+                    }
+                });
             """
             self.browser.page().runJavaScript(script)
 
