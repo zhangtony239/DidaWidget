@@ -81,10 +81,14 @@ class TickTickViewer(QMainWindow):
 
     def mousePressEvent(self, _):
         pass  # 禁用拖动
-
+ 
     def mouseMoveEvent(self, _):
         pass
 
+    def closeEvent(self, event):
+        # 忽略关闭事件，防止 Alt+F4 关闭
+        event.ignore()
+ 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     viewer = TickTickViewer()
