@@ -1,4 +1,23 @@
-/.venv
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv
+.env
+
+# Conda environment
+.conda/
+
+# Build artifacts
 build/
-app.spec
 dist/
+app.spec
+app.exe
+app.build/
+app.dist/
+app.onefile-build/
+
+# IDE settings
+.vscode/
+.idea/
