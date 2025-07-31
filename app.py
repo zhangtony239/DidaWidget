@@ -29,10 +29,17 @@ class TickTickViewer(QMainWindow):
         self.set_always_on_bottom() # 修正方法调用
 
         # 配置持久化存储
-        data_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppLocalDataLocation)
-        persistent_dir = os.path.join(data_path, "ticktick_profile")
+        # 判断程序是否被打包
+        if getattr(sys, 'frozen', False):
+            # 如果是打包状态，则基路径是可执行文件所在目录
+            base_path = os.path.dirname(sys.executable)
+        else:
+            # 如果是正常运行状态，则基路径是脚本所在目录
+            base_path = os.path.dirname(os.path.abspath(__file__))
+
+        persistent_dir = os.path.join(base_path, "app_data", "ticktick_profile")
         if not os.path.exists(persistent_dir):
-            os.makedirs(persistent_dir)
+            os.makedirs(persistent_dir, exist_ok=True)
 
         self.profile = QWebEngineProfile("ticktick_storage", self)
         self.profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.AllowPersistentCookies)
