@@ -22,10 +22,9 @@ class TickTickViewer(QMainWindow):
             Qt.WindowType.Tool |  # Tool 窗口通常不出现在任务栏
             Qt.WindowType.WindowStaysOnBottomHint # Qt 级别的置底提示
         )
-        # 获取屏幕尺寸并设置为全屏
-        screen = QApplication.primaryScreen().availableGeometry()
-        self.setFixedSize(screen.width(), screen.height())
-        self.move(0, 0)
+        # 获取屏幕尺寸并设置为全屏，连接屏幕分辨率变化信号
+        QApplication.primaryScreen().geometryChanged.connect(self.update_geometry)
+        self.update_geometry()  # 初始化时设置一次窗口大小
         self.setWindowTitle("滴答清单")
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.set_always_on_bottom() # 修正方法调用
@@ -51,7 +50,7 @@ class TickTickViewer(QMainWindow):
         # 加载滴答清单网页
         self.browser = CustomWebEngineView(self.profile, self) # 使用自定义 profile
         self.browser.setUrl(QUrl("https://dida365.com/webapp"))
-        self.browser.setGeometry(0, 0, self.width(), self.height()) # WebEngineView相对于QMainWindow的位置
+        # 浏览器的大小将在 update_geometry 中设置，这里就不需要了
         self.browser.loadFinished.connect(self.apply_multiply_effect)
 
 
@@ -80,6 +79,12 @@ class TickTickViewer(QMainWindow):
         ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
         win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style | win32con.WS_EX_NOACTIVATE)
 
+    def update_geometry(self):
+        """处理屏幕尺寸变化，更新窗口和浏览器视图的大小"""
+        screen_geometry = QApplication.primaryScreen().availableGeometry()
+        self.setGeometry(screen_geometry)
+        if hasattr(self, 'browser'):
+            self.browser.setGeometry(0, 0, self.width(), self.height())
 
     def mousePressEvent(self, _):
         pass  # 禁用拖动
