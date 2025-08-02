@@ -23,7 +23,7 @@ class TickTickViewer(QMainWindow):
             Qt.WindowType.WindowStaysOnBottomHint # Qt 级别的置底提示
         )
         # 获取屏幕尺寸并设置为全屏
-        screen = QApplication.primaryScreen().geometry()
+        screen = QApplication.primaryScreen().availableGeometry()
         self.setFixedSize(screen.width(), screen.height())
         self.move(0, 0)
         self.setWindowTitle("滴答清单")
