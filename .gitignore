@@ -18,6 +18,10 @@ app.build/
 app.dist/
 app.onefile-build/
 
+# Nuitka fullscreen build
+fullscreen.build/
+fullscreen.dist/
+
 # IDE settings
 .vscode/
 .idea/
