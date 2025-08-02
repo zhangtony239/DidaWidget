@@ -22,8 +22,10 @@ class TickTickViewer(QMainWindow):
             Qt.WindowType.Tool |  # Tool 窗口通常不出现在任务栏
             Qt.WindowType.WindowStaysOnBottomHint # Qt 级别的置底提示
         )
-        self.setFixedSize(600, 640)  # 可改为你需要的尺寸
-        self.move(70, 90) # 移动到屏幕左上角
+        # 获取屏幕尺寸并设置为全屏
+        screen = QApplication.primaryScreen().geometry()
+        self.setFixedSize(screen.width(), screen.height())
+        self.move(0, 0)
         self.setWindowTitle("滴答清单")
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.set_always_on_bottom() # 修正方法调用
@@ -49,7 +51,7 @@ class TickTickViewer(QMainWindow):
         # 加载滴答清单网页
         self.browser = CustomWebEngineView(self.profile, self) # 使用自定义 profile
         self.browser.setUrl(QUrl("https://dida365.com/webapp"))
-        self.browser.setGeometry(-50, 0, 650, 640) # WebEngineView相对于QMainWindow的位置
+        self.browser.setGeometry(0, 0, self.width(), self.height()) # WebEngineView相对于QMainWindow的位置
         self.browser.loadFinished.connect(self.apply_multiply_effect)
 
 
