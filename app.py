@@ -1,9 +1,9 @@
 import sys
 import os
-from PyQt6.QtWidgets import QApplication, QMainWindow
-from PyQt6.QtCore import Qt, QTimer, QUrl
-from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWebEngineCore import QWebEngineProfile
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtCore import Qt, QTimer, QUrl
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWebEngineCore import QWebEngineProfile, QWebEngineSettings
 import win32gui
 import win32con
 
@@ -48,6 +48,7 @@ class TickTickViewer(QMainWindow):
 
         # 加载滴答清单网页
         self.browser = CustomWebEngineView(self.profile, self) # 使用自定义 profile
+        self.browser.page().settings().setAttribute(QWebEngineSettings.WebAttribute.ShowScrollBars, False)
         self.browser.setUrl(QUrl("https://dida365.com/webapp"))
         self.browser.setGeometry(-50, 0, 650, 640) # WebEngineView相对于QMainWindow的位置
         self.browser.loadFinished.connect(self.apply_multiply_effect)
@@ -89,6 +90,7 @@ class TickTickViewer(QMainWindow):
         # 忽略关闭事件，防止 Alt+F4 关闭
         event.ignore()
  
+os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-frame-rate-limit"
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     viewer = TickTickViewer()
